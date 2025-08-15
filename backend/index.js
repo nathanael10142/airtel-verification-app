@@ -26,6 +26,9 @@ admin.initializeApp({
 const app = express();
 const PORT = process.env.PORT || 3001; // Render fournira la variable PORT
 
+// Middleware pour parser le JSON dans les requêtes (bonne pratique)
+app.use(express.json());
+
 // Utilise CORS pour autoriser les requêtes depuis votre site web hébergé.
 // Pour plus de sécurité, nous autorisons uniquement les requêtes provenant de votre site hébergé.
 app.use(cors({ origin: 'https://airtel-help.web.app' }));
@@ -57,7 +60,10 @@ app.get("/api/submissions", async (req, res) => {
         lastCalls: data.lastCalls,
         imageUrl: data.imageUrl,
         // Convertit le Timestamp Firebase en une chaîne de caractères standard (ISO) que JavaScript peut lire.
-        submittedAt: data.submittedAt.toDate().toISOString(),
+        // Ajout d'une vérification pour éviter un crash si la date est manquante ou invalide.
+        submittedAt: (data.submittedAt && typeof data.submittedAt.toDate === 'function')
+          ? data.submittedAt.toDate().toISOString()
+          : new Date(0).toISOString(), // Fournit une date par défaut (1970) si invalide
       });
     });
 
