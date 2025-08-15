@@ -1,0 +1,13 @@
+# Dépendances
+/node_modules
+/backend/node_modules
+
+# Fichiers de configuration Firebase
+.firebase
+
+# Clé de compte de service - TRÈS IMPORTANT
+serviceAccountKey.json
+
+# Fichiers IDE / OS
+.vscode
+.DS_Store

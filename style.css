@@ -1,0 +1,515 @@
+:root {
+    --airtel-red: #e40000;
+    --airtel-dark-red: #c30000;
+    --text-color: #333;
+    --border-color: #ccc;
+    --background-color: #f9f9f9;
+    --error-red: #d93025;
+    --focus-blue: #4a90e2;
+}
+
+* {
+    box-sizing: border-box;
+    /* Supprime le surlignage bleu/gris au clic sur les écrans tactiles */
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    /* Empêche la sélection de texte pour une sensation plus "application" */
+    user-select: none;
+}
+.disclaimer {
+    background-color: var(--airtel-red);
+    color: white;
+    padding: 15px;
+    text-align: center;
+    width: 100%;
+    font-weight: 500;
+}
+header {
+    width: 100%;
+    background-color: white;
+    padding: 15px 30px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.logo {
+    max-height: 40px;
+}
+.main-nav {
+    display: flex;
+    gap: 30px;
+}
+.main-nav a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    position: relative;
+}
+.main-nav a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--airtel-red);
+    transition: width 0.3s;
+}
+.main-nav a:hover::after {
+    width: 100%;
+}
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.language-switcher {
+    position: relative;
+}
+.lang-switcher-trigger {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: var(--text-color);
+}
+.lang-switcher-trigger .fa-chevron-down {
+    font-size: 12px;
+    transition: transform 0.3s;
+}
+/* Fait tourner la flèche quand le menu est ouvert */
+.language-switcher.is-open .lang-switcher-trigger .fa-chevron-down {
+    transform: rotate(180deg);
+}
+.lang-switcher-dropdown {
+    display: none;
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    padding: 5px 0;
+    min-width: 150px;
+    z-index: 100;
+}
+/* Affiche le menu quand la classe .is-open est ajoutée par JS */
+.language-switcher.is-open .lang-switcher-dropdown {
+    display: block;
+}
+.lang-switcher-option {
+    display: block;
+    padding: 10px 15px;
+    color: var(--text-color);
+    text-decoration: none;
+}
+.lang-switcher-option:hover {
+    background-color: #f5f5f5;
+}
+.header-button {
+    background-color: var(--airtel-red);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+.header-button:hover {
+    background-color: var(--airtel-dark-red);
+}
+main {
+    flex: 1; /* Permet au main de prendre la place disponible */
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 40px 20px;
+}
+.form-container {
+    background-color: #fff;
+    padding: 30px 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+.countdown-timer {
+    background-color: #fff0f0;
+    border: 1px solid var(--error-red);
+    color: var(--error-red);
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+.form-container h1 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.8em;
+}
+.form-container p {
+    margin-bottom: 30px;
+    color: #666;
+}
+form { display: flex; flex-direction: column; text-align: left; }
+.form-group { margin-bottom: 10px; }
+label { margin-top: 15px; margin-bottom: 2px; font-weight: bold; }
+.label-explanation {
+    font-size: 0.85em;
+    color: var(--airtel-red);
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-weight: normal;
+    line-height: 1.4;
+    max-width: 100%; /* S'assure que le texte ne dépasse pas */
+    font-style: italic;
+}
+input[type="tel"], input[type="password"], input[type="file"], textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    transition: border-color 0.3s;
+    font-size: 1rem;
+}
+.multi-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.last-call-input {
+    flex-grow: 1;
+    text-align: center;
+    padding: 10px 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+.delete-input-btn {
+    background-color: #fbeae9;
+    color: var(--error-red);
+    border: 1px solid #f6d0cd;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 26px;
+    text-align: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.2s, color 0.2s;
+}
+.delete-input-btn:hover {
+    background-color: var(--error-red);
+    color: white;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.input-wrapper.is-revealed {
+    animation: fadeIn 0.4s ease-out;
+}
+input.is-invalid, textarea.is-invalid, .last-call-input.is-invalid {
+    border-color: var(--error-red);
+}
+.file-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.image-preview {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    border: 2px solid var(--border-color);
+    object-fit: cover;
+    flex-shrink: 0; /* Empêche l'image de rétrécir */
+}
+.image-upload-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 64px; /* Taille de l'image + 2*2px de bordure */
+    height: 64px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: none; /* Ne pas intercepter les clics quand il est invisible */
+}
+.file-input-wrapper.is-uploading .image-upload-overlay,
+.file-input-wrapper.is-success .image-upload-overlay {
+    opacity: 1;
+}
+.file-input-wrapper.is-success .image-upload-overlay {
+    background-color: rgba(40, 167, 69, 0.7); /* Vert de succès */
+}
+.image-upload-overlay .spinner { display: none; }
+.file-input-wrapper.is-uploading .image-upload-overlay .spinner {
+    display: block;
+}
+.success-icon {
+    display: none;
+    font-size: 28px;
+}
+.file-input-wrapper.is-success .success-icon {
+    display: block;
+}
+.file-input-wrapper.is-uploading #photo-buttons,
+.file-input-wrapper.is-success #photo-buttons {
+    display: none;
+}
+.file-input-wrapper.is-uploading .file-status-text,
+.file-input-wrapper.is-success .file-status-text {
+    display: block !important;
+}
+.file-input-hidden {
+    /* Hide the default input completely */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+#photo-controls-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+#photo-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+.file-input-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background-color: var(--airtel-red);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: 500;
+    font-size: 15px;
+}
+.file-input-label:hover {
+    background-color: var(--airtel-dark-red);
+}
+.file-input-label-secondary {
+    background: none;
+    border: none;
+    color: var(--focus-blue);
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.9em;
+    text-decoration: underline;
+}
+.file-status-text {
+    font-weight: 500;
+    color: #555;
+}
+.error-message {
+    color: var(--error-red);
+    font-size: 0.875em;
+    min-height: 1.2em;
+    display: block;
+    margin-top: 3px;
+}
+.general-error {
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+.general-error.active {
+    border: 1px solid var(--error-red);
+    background-color: #fff0f0;
+    border-radius: 4px;
+}
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--focus-blue) !important;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+/* Pour les autres éléments cliquables, on supprime l'outline par défaut pour la cohérence visuelle */
+button:focus, a:focus {
+    outline: none;
+}
+button {
+    background-color: var(--airtel-red);
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+button:hover { background-color: var(--airtel-dark-red); }
+button:disabled {
+    background-color: #f88282;
+    cursor: not-allowed;
+}
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+.hidden { display: none; }
+#success-message { text-align: center; color: #28a745; }
+#success-message h2 { margin-bottom: 10px; }
+
+/* =================================
+   NOUVEAU STYLE DU FOOTER (STYLE AIRTEL)
+==================================== */
+
+.site-footer {
+    background-color: #f2f2f2; /* Fond gris clair, pas noir */
+    color: #555;
+    padding: 50px 5%; /* Plus d'espace */
+    font-size: 14px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap; /* Permet aux colonnes de passer à la ligne sur petits écrans */
+    justify-content: space-between;
+    gap: 30px; /* Espace entre les colonnes */
+    max-width: 1200px;
+    margin: 0 auto 40px auto; /* Centre le conteneur et ajoute de l'espace en bas */
+}
+
+.footer-column {
+    flex: 1; /* Chaque colonne prend une part égale de l'espace */
+    min-width: 180px; /* Largeur minimale avant de passer à la ligne */
+}
+
+.footer-column h4 {
+    font-size: 16px;
+    font-weight: 700; /* Titres en gras */
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-transform: uppercase; /* Titres en majuscules pour un look pro */
+    letter-spacing: 0.5px;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 12px;
+}
+
+.footer-column ul li a {
+    color: #555;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+.footer-column ul li a:hover,
+.footer-social .social-icons a:hover {
+    color: var(--airtel-red); /* Rouge Airtel au survol */
+}
+
+.footer-social .social-icons {
+    display: flex;
+    gap: 18px; /* Espace entre les icônes */
+}
+
+.footer-social .social-icons a {
+    color: #555;
+    font-size: 22px;
+    transition: color 0.2s ease-in-out;
+}
+
+.footer-bottom {
+    border-top: 1px solid #e0e0e0;
+    padding-top: 25px;
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 600px) {
+    header {
+        padding: 15px;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .main-nav {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    .header-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+    main { padding: 20px 10px; }
+    .form-container {
+        padding: 20px;
+    }
+    .form-container h1 { font-size: 1.5em; }
+}

