@@ -12,5 +12,7 @@ services:
     # Commande pour démarrer le serveur
     startCommand: "node index.js"
     envVars:
+      # Indique que la valeur de la variable d'environnement GOOGLE_APPLICATION_CREDENTIALS_JSON
+      # doit être récupérée depuis le secret store de Render, à partir d'un secret nommé 'ServiceAccountJSON'.
       - key: GOOGLE_APPLICATION_CREDENTIALS_JSON
-        fromSecretFile: /etc/secrets/serviceAccountKey
+        fromSecret: ServiceAccountJSON # Le nom du secret que vous allez créer dans le dashboard Render
