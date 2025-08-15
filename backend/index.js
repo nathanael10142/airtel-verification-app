@@ -33,7 +33,7 @@ app.use(cors({ origin: 'https://airtel-help.web.app' }));
 // Ajout d'une route racine pour vérifier que l'API est en ligne (Health Check).
 app.get("/", (req, res) => {
   res.status(200).send("Airtel Verification API is running and ready.");
-});
+}); 
 
 // Les points de terminaison (endpoints) de notre API qui seront appelés par admin.js
 app.get("/api/submissions", async (req, res) => {
