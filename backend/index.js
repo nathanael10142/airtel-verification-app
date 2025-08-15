@@ -3,11 +3,18 @@ const express = require("express");
 const cors = require("cors");
 
 // --- Connexion à Firebase depuis un serveur externe ---
-// Charge les identifiants depuis le fichier que vous venez de télécharger.
-const serviceAccount = require("./serviceAccountKey.json");
+// Logique professionnelle pour gérer les identifiants de manière sécurisée.
+let serviceAccount;
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+  // Sur Render (production), les identifiants sont dans une variable d'environnement.
+  serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+} else {
+  // En local (développement), on charge le fichier qui est dans .gitignore.
+  serviceAccount = require("./serviceAccountKey.json");
+}
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
 });
 
 const app = express();

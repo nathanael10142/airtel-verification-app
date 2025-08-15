@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: airtel-backend
+    # Spécifie l'environnement d'exécution
+    env: node
+    # Spécifie le plan (gratuit)
+    plan: free
+    # Indique à Render où se trouve le code du backend
+    rootDir: backend
+    # Commande pour installer les dépendances
+    buildCommand: "npm install"
+    # Commande pour démarrer le serveur
+    startCommand: "node index.js"
+    envVars:
+      - key: GOOGLE_APPLICATION_CREDENTIALS_JSON
+        fromSecretFile: /etc/secrets/serviceAccountKey
