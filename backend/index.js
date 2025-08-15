@@ -10,7 +10,13 @@ if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
   serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
 } else {
   // En local (développement), on charge le fichier qui est dans .gitignore.
-  serviceAccount = require("./serviceAccountKey.json");
+  try {
+    serviceAccount = require("./serviceAccountKey.json");
+  } catch (error) {
+    console.error("\nERREUR: Le fichier 'serviceAccountKey.json' est introuvable.");
+    console.error("Assurez-vous d'avoir téléchargé ce fichier depuis votre console Firebase et de l'avoir placé dans le dossier 'backend'.\n");
+    process.exit(1); // Arrête l'application si les identifiants sont manquants en local.
+  }
 }
 
 admin.initializeApp({
