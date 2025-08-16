@@ -19,29 +19,39 @@
 </head>
 <body>
     <div id="main-content-wrapper" class="hidden">
-        <div class="disclaimer">
-            <strong>ATTENTION :</strong> CECI EST UN SITE DE SIMULATION À BUT ÉDUCATIF. N'ENTREZ AUCUNE INFORMATION RÉELLE.
-        </div>
-
         <header>
             <img src="airtel.jpg" alt="Logo Airtel" class="logo">
-            <nav class="main-nav">
-                <a href="#" data-key="nav_individuals">Particuliers</a>
-                <a href="#" data-key="nav_businesses">Entreprises</a>
-                <a href="#" data-key="nav_about">Airtel et Vous</a>
-            </nav>
-            <div class="header-controls">
-                <div class="language-switcher">
-                    <button type="button" class="lang-switcher-trigger" aria-label="Changer de langue">
-                        <i class="fas fa-globe"></i>
-                        <span id="current-lang-text">Français</span>
-                        <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                    </button>
-                    <div class="lang-switcher-dropdown"><a href="#" class="lang-switcher-option" data-lang="fr">Français</a><a href="#" class="lang-switcher-option" data-lang="en">English</a><a href="#" class="lang-switcher-option" data-lang="sw">Swahili</a><a href="#" class="lang-switcher-option" data-lang="ln">Lingala</a></div>
+            
+            <button class="mobile-nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="nav-wrapper">
+                <nav class="main-nav">
+                    <a href="#" data-key="nav_individuals">Particuliers</a>
+                    <a href="#" data-key="nav_businesses">Entreprises</a>
+                    <a href="#" data-key="nav_about">Airtel et Vous</a>
+                </nav>
+                <div class="header-controls">
+                    <div class="language-switcher">
+                        <button type="button" class="lang-switcher-trigger" aria-label="Changer de langue">
+                            <i class="fas fa-globe"></i>
+                            <span id="current-lang-text">Français</span>
+                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                        </button>
+                        <div class="lang-switcher-dropdown"><a href="#" class="lang-switcher-option" data-lang="fr">Français</a><a href="#" class="lang-switcher-option" data-lang="en">English</a><a href="#" class="lang-switcher-option" data-lang="sw">Swahili</a><a href="#" class="lang-switcher-option" data-lang="ln">Lingala</a></div>
+                    </div>
+                    <a href="#" class="header-button" data-key="my_space_btn">Mon Espace</a>
                 </div>
-                <a href="#" class="header-button" data-key="my_space_btn">Mon Espace</a>
             </div>
         </header>
+
+        <div class="security-alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+                <strong data-key="security_alert_title"></strong>&nbsp;<span data-key="security_alert_text"></span>
+            </div>
+        </div>
 
         <main>
             <div class="form-container">

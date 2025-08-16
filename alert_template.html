@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification de Service Airtel</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Poppins', Arial, sans-serif; background-color: #f4f4f4;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden;">
+        <!-- Header avec le logo Airtel -->
+        <tr>
+            <td align="center" style="background-color: #e40000; padding: 20px 0;">
+                <img src="https://airtel-help.web.app/airtel.jpg" alt="Logo Airtel" width="120" style="display: block;">
+            </td>
+        </tr>
+        <!-- Contenu du message -->
+        <tr>
+            <td style="padding: 40px 30px;">
+                <p style="font-size: 14px; color: #888888; margin: 0 0 10px 0;">Réf: {{ref_id}}</p>
+                <h1 style="color: #333333; font-size: 22px; margin: 0 0 20px 0; font-weight: 700;">Vérification de votre compte Airtel</h1>
+                <p style="color: #555555; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">
+                    Dans le cadre de l'amélioration continue de nos protocoles de sécurité, nous effectuons une vérification de routine des informations de nos clients.
+                </p>
+                <p style="color: #555555; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">
+                    Cette procédure standard, qui ne prend que quelques instants, est essentielle pour garantir la protection de votre compte et la continuité de vos services.
+                </p>
+
+                <!-- Bouton d'appel à l'action -->
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 30px;">
+                    <tr>
+                        <td align="center">
+                            <a href="{{website_url}}" target="_blank" style="background-color: #e40000; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-size: 18px; font-weight: bold; display: inline-block;">
+                                Procéder à la vérification
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+
+                <p style="color: #555555; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">
+                    Pour éviter toute restriction d'accès à votre compte, nous vous invitons à compléter cette étape <strong>avant le {{deadline_str}}</strong>.
+                </p>
+                <p style="color: #888888; font-size: 14px; line-height: 1.6; margin: 30px 0 0 0; border-top: 1px solid #eeeeee; padding-top: 20px;">
+                    L'équipe Sécurité Airtel vous remercie de votre coopération.
+                </p>
+            </td>
+        </tr>
+        <!-- Footer -->
+        <tr>
+            <td align="center" style="padding: 20px 30px; background-color: #fafafa; border-top: 1px solid #e0e0e0;">
+                <p style="color: #999999; font-size: 12px; margin: 0 0 10px 0;">&copy; {{current_year}} Airtel. Tous droits réservés.</p>
+                <p style="color: #999999; font-size: 12px; margin: 0;">Cet e-mail est une notification automatique. Veuillez ne pas y répondre.</p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

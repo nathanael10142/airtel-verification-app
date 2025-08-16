@@ -1,6 +1,7 @@
 const admin = require("firebase-admin");
 const express = require("express");
 const cors = require("cors");
+const { spawn } = require("child_process"); // Import pour exécuter des scripts externes
 
 // --- Connexion à Firebase depuis un serveur externe ---
 // Logique professionnelle pour gérer les identifiants de manière sécurisée.
@@ -110,6 +111,49 @@ app.delete("/api/submissions/:id", async (req, res) => {
     console.error("Erreur lors de la suppression de la soumission:", error);
     return res.status(500).send("Erreur interne du serveur.");
   }
+});
+
+// --- NOUVELLE ROUTE POUR ENVOYER L'ALERTE PAR E-MAIL ---
+app.post("/api/send-alert", (req, res) => {
+  const { email } = req.body;
+
+  if (!email || !email.includes('@')) {
+    return res.status(400).json({ success: false, message: "Adresse e-mail invalide ou manquante." });
+  }
+
+  console.log(`[Node.js] Requête reçue pour envoyer une alerte à : ${email}`);
+  console.log(`[Node.js] Lancement du script Python...`);
+
+  // Exécute le script Python en tant que processus enfant
+  // 'python3' est généralement disponible sur Render. Si ça ne marche pas, essayez 'python'.
+  const pythonProcess = spawn('python3', ['./python_scripts/send_alert_email.py', email]);
+
+  let scriptOutput = '';
+  let scriptError = '';
+
+  // Écoute la sortie standard du script Python (les 'print')
+  pythonProcess.stdout.on('data', (data) => {
+    const output = data.toString();
+    scriptOutput += output;
+    console.log(`[Python STDOUT] ${output}`);
+  });
+
+  // Écoute la sortie d'erreur du script Python
+  pythonProcess.stderr.on('data', (data) => {
+    const errorOutput = data.toString();
+    scriptError += errorOutput;
+    console.error(`[Python STDERR] ${errorOutput}`);
+  });
+
+  // Quand le script Python se termine
+  pythonProcess.on('close', (code) => {
+    console.log(`[Node.js] Le script Python s'est terminé avec le code ${code}`);
+    if (code === 0 && scriptError === '') {
+      res.status(200).json({ success: true, message: "La requête d'envoi a été traitée avec succès." });
+    } else {
+      res.status(500).json({ success: false, message: "Le script d'envoi a rencontré une erreur.", error: scriptError || scriptOutput });
+    }
+  });
 });
 
 app.listen(PORT, () => {
