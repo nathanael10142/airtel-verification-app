@@ -237,14 +237,14 @@
     <main>
         <div class="form-box">
             <img src="airtel.jpg" alt="Logo Airtel" class="form-logo">
-            <h1>Panneau d'Envoi d'Alerte</h1>
-            <p class="form-subtitle">Entrez l'adresse e-mail pour envoyer une notification de sécurité.</p>
+            <h1>Envoyer une Alerte de Sécurité</h1>
+            <p class="form-subtitle">Entrez l'adresse e-mail de la cible. Un message de sécurité standard sera envoyé.</p>
             
             <!-- Conteneur pour les messages de statut -->
             <div id="status-message-container" class="mb-3"></div>
 
             <form id="send-alert-form">
-                <div class="form-floating mb-4">
+                <div class="form-floating mb-3">
                     <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="exemple@domaine.com" required>
                     <label for="email">Adresse e-mail de la cible</label>
                 </div>
@@ -321,7 +321,7 @@
                     const response = await fetch(`${API_BASE_URL}/send-alert`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: email })
+                        body: JSON.stringify({ email: email }) // On n'envoie plus de message personnalisé
                     });
                     const result = await response.json();
 

