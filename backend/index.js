@@ -113,6 +113,52 @@ app.delete("/api/submissions/:id", async (req, res) => {
   }
 });
 
+// Route pour OBTENIR la liste de toutes les alertes envoyées
+app.get('/api/sent-alerts', async (req, res) => {
+    try {
+        // On récupère les alertes de la collection 'sentAlerts', triées par date (la plus récente en premier)
+        const db = admin.firestore();
+        const snapshot = await db.collection('sentAlerts').orderBy('sentAt', 'desc').get();
+        const alerts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        res.status(200).json(alerts);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des alertes :", error);
+        res.status(500).json({ message: "Impossible de récupérer l'historique des alertes." });
+    }
+});
+
+// Route pour OBTENIR le détail d'une alerte par son ID
+app.get('/api/sent-alerts/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const db = admin.firestore();
+        const doc = await db.collection('sentAlerts').doc(id).get();
+        if (!doc.exists) {
+            return res.status(404).json({ message: 'Alerte non trouvée.' });
+        }
+        res.status(200).json({ id: doc.id, ...doc.data() });
+    } catch (error) {
+        console.error("Erreur lors de la récupération du détail de l'alerte :", error);
+        res.status(500).json({ message: "Impossible de récupérer le détail de l'alerte." });
+    }
+});
+
+// --- NOUVELLE ROUTE POUR ENVOYER L'ALERTE PAR E-MAIL ---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // --- NOUVELLE ROUTE POUR ENVOYER L'ALERTE PAR E-MAIL ---
 app.post("/api/send-alert", (req, res) => {
   const { email } = req.body;

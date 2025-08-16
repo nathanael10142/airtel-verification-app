@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envoyer une Alerte - Administration Airtel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style> /* Style "Pro" inspiré du panneau d'administration */
+        :root {
+            --airtel-red: #e60000;
+            --airtel-red-dark: #c00;
+            --background-color: #f4f5f7;
+            --card-background: #ffffff;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --border-color: #e0e0e0;
+            --border-color-focus: #e60000;
+            --info-bg: #f9f9f9;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        main {
+            width: 100%;
+        }
+
+        .form-box {
+            background: var(--card-background);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            border-top: 4px solid var(--airtel-red);
+            margin: 0 auto; /* Centrer la boîte horizontalement */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-logo {
+            max-width: 120px;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-box h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .form-box .form-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+        }
+
+        .btn-airtel {
+            background-color: var(--airtel-red);
+            border-color: var(--airtel-red);
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 0.9rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .btn-airtel:hover:not(:disabled) {
+            background-color: var(--airtel-red-dark);
+            border-color: var(--airtel-red-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(230, 0, 0, 0.3);
+        }
+        
+        .btn-airtel:disabled {
+            background-color: #f8a0a0;
+            border-color: #f8a0a0;
+        }
+
+        .form-control-lg {
+            border-radius: 8px;
+            padding: 0.9rem 1.1rem;
+            font-size: 1rem;
+            border: 2px solid var(--border-color);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        .form-control-lg:focus {
+            border-color: var(--border-color-focus);
+            box-shadow: 0 0 0 4px rgba(230, 0, 0, 0.15);
+        }
+
+        /* Styles pour le label flottant */
+        .form-floating > .form-control-lg {
+            height: calc(3.5rem + 4px); /* 3.5rem base + 2px border top/bottom */
+            line-height: 1.25;
+        }
+        .form-floating > label {
+            padding: 1rem 1.1rem;
+            color: #888;
+        }
+        .form-floating > .form-control-lg:focus ~ label,
+        .form-floating > .form-control-lg:not(:placeholder-shown) ~ label {
+            opacity: .85;
+            transform: scale(.85) translateY(-.5rem) translateX(.15rem);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* --- Styles pour le panneau latéral (Off-canvas) --- */
+        .panel-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .panel-overlay.is-visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sent-alerts-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            max-width: 450px;
+            height: 100%;
+            background-color: var(--card-background);
+            box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+            z-index: 1050;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            flex-direction: column;
+        }
+        .sent-alerts-panel.is-open {
+            transform: translateX(0);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        .panel-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--airtel-red);
+        }
+        .panel-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.75rem;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .panel-close-btn:hover {
+            color: var(--text-primary);
+            transform: rotate(90deg);
+        }
+
+        .panel-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .alert-list-item {
+            background-color: var(--info-bg);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--airtel-red);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .alert-list-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .alert-list-item strong {
+            display: block;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        .alert-list-item span {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .alert-detail-view {
+            font-size: 0.9rem;
+        }
+        .alert-detail-view pre {
+            background-color: var(--info-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+    </style>
+</head>
+<body>
+    <main>
+        <div class="form-box">
+            <img src="airtel.jpg" alt="Logo Airtel" class="form-logo">
+            <h1>Panneau d'Envoi d'Alerte</h1>
+            <p class="form-subtitle">Entrez l'adresse e-mail pour envoyer une notification de sécurité.</p>
+            
+            <!-- Conteneur pour les messages de statut -->
+            <div id="status-message-container" class="mb-3"></div>
+
+            <form id="send-alert-form">
+                <div class="form-floating mb-4">
+                    <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="exemple@domaine.com" required>
+                    <label for="email">Adresse e-mail de la cible</label>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" id="submit-btn" class="btn btn-airtel btn-lg">
+                        <i class="fas fa-paper-plane"></i>
+                        <span id="btn-text">Envoyer l'Alerte</span>
+                        <div id="loading-spinner" class="spinner-border spinner-border-sm hidden" role="status"></div>
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <a href="#" id="view-sent-alerts-btn" class="text-decoration-none fw-bold">
+                    <i class="fas fa-history"></i> Voir les alertes envoyées
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Panneau latéral pour l'historique des alertes -->
+    <div id="panel-overlay" class="panel-overlay"></div>
+    <aside id="sent-alerts-panel" class="sent-alerts-panel">
+        <header class="panel-header">
+            <h2 id="panel-title">Alertes Envoyées</h2>
+            <button id="panel-close-btn" class="panel-close-btn" title="Fermer">&times;</button>
+        </header>
+        <div class="panel-body">
+            <!-- Vue de la liste des alertes -->
+            <div id="alerts-list-view">
+                <!-- Le contenu sera injecté par JS -->
+            </div>
+            <!-- Vue détaillée d'une alerte -->
+            <div id="alert-detail-view" class="alert-detail-view hidden"></div>
+        </div>
+    </aside>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('send-alert-form');
+            const emailInput = document.getElementById('email');
+            const submitBtn = document.getElementById('submit-btn');
+            const btnIcon = submitBtn.querySelector('i');
+            const btnText = document.getElementById('btn-text');
+            const btnSpinner = document.getElementById('loading-spinner');
+            const statusContainer = document.getElementById('status-message-container');
+
+            // Éléments du panneau latéral
+            const viewAlertsBtn = document.getElementById('view-sent-alerts-btn');
+            const alertsPanel = document.getElementById('sent-alerts-panel');
+            const panelOverlay = document.getElementById('panel-overlay');
+            const panelCloseBtn = document.getElementById('panel-close-btn');
+            const panelTitle = document.getElementById('panel-title');
+            const alertsListView = document.getElementById('alerts-list-view');
+            const alertDetailView = document.getElementById('alert-detail-view');
+
+            // L'URL de votre backend sur Render
+            const API_BASE_URL = 'https://airtel-backend.onrender.com/api';
+
+
+            // --- Logique d'envoi d'une nouvelle alerte ---
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = emailInput.value;
+                
+                // Reset UI
+                statusContainer.innerHTML = '';
+                submitBtn.disabled = true;
+                btnText.textContent = 'Envoi en cours...';
+                btnIcon.classList.add('hidden');
+                btnSpinner.classList.remove('hidden');
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/send-alert`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email })
+                    });
+                    const result = await response.json();
+
+                    if (!response.ok) { // Gère les erreurs HTTP comme 400, 500 etc.
+                        throw new Error(result.message || 'Erreur du serveur');
+                    }
+
+                    statusContainer.innerHTML = `<div class="alert alert-success">Succès ! La requête d'envoi pour <strong>${email}</strong> a été traitée.</div>`;
+                    form.reset();
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    statusContainer.innerHTML = `<div class="alert alert-danger"><strong>Échec:</strong> ${error.message}</div>`;
+                } finally {
+                    // Restore button state
+                    submitBtn.disabled = false;
+                    btnText.textContent = "Envoyer l'Alerte";
+                    btnIcon.classList.remove('hidden');
+                    btnSpinner.classList.add('hidden');
+                }
+            });
+
+            // --- Logique du panneau d'historique ---
+
+            const openPanel = () => {
+                panelOverlay.classList.add('is-visible');
+                alertsPanel.classList.add('is-open');
+                fetchSentAlerts();
+            };
+
+            const closePanel = () => {
+                panelOverlay.classList.remove('is-visible');
+                alertsPanel.classList.remove('is-open');
+            };
+
+            const showListView = () => {
+                alertDetailView.classList.add('hidden');
+                alertsListView.classList.remove('hidden');
+                panelTitle.textContent = 'Alertes Envoyées';
+            };
+
+            const showDetailView = () => {
+                alertsListView.classList.add('hidden');
+                alertDetailView.classList.remove('hidden');
+                panelTitle.textContent = 'Détail de l\'Alerte';
+            };
+
+            // Récupérer et afficher la liste des alertes
+            async function fetchSentAlerts() {
+                alertsListView.innerHTML = '<div class="spinner-border text-danger" role="status"></div>';
+                try {
+                    const response = await fetch(`${API_BASE_URL}/sent-alerts`);
+                    if (!response.ok) {
+                        if (response.status === 404) throw new Error('La route API pour l\'historique n\'a pas été trouvée sur le serveur (erreur 404).');
+                        throw new Error(`Erreur de chargement des alertes (code: ${response.status}).`);
+                    }
+                    const alerts = await response.json();
+
+                    alertsListView.innerHTML = ''; // Vider le spinner
+                    if (alerts.length === 0) {
+                        alertsListView.innerHTML = '<p>Aucune alerte n\'a été envoyée pour le moment.</p>';
+                        return;
+                    }
+
+                    alerts.forEach(alert => {
+                        const item = document.createElement('div');
+                        item.className = 'alert-list-item';
+                        item.dataset.id = alert.id;
+                        const sentDate = new Date(alert.sentAt).toLocaleString('fr-FR');
+                        item.innerHTML = `
+                            <strong>${alert.recipient}</strong>
+                            <span>Envoyée le ${sentDate}</span>
+                        `;
+                        item.addEventListener('click', () => fetchAlertDetails(alert.id));
+                        alertsListView.appendChild(item);
+                    });
+                } catch (error) {
+                    alertsListView.innerHTML = `<p class="text-danger">${error.message}</p>`;
+                }
+            }
+
+            // Récupérer et afficher le détail d'une alerte
+            async function fetchAlertDetails(id) {
+                showDetailView();
+                alertDetailView.innerHTML = '<div class="spinner-border text-danger" role="status"></div>';
+                try {
+                    const response = await fetch(`${API_BASE_URL}/sent-alerts/${id}`);
+                    if (!response.ok) {
+                        if (response.status === 404) throw new Error(`L'alerte avec l'ID ${id} n'a pas été trouvée (erreur 404).`);
+                        throw new Error(`Impossible de charger le détail de l'alerte (code: ${response.status}).`);
+                    }
+                    const alert = await response.json();
+
+                    alertDetailView.innerHTML = `
+                        <button id="back-to-list-btn" class="btn btn-sm btn-outline-secondary mb-3">
+                            <i class="fas fa-arrow-left"></i> Retour à la liste
+                        </button>
+                        <p><strong>Destinataire :</strong> ${alert.recipient}</p>
+                        <p><strong>Sujet :</strong> ${alert.subject}</p>
+                        <p><strong>Date :</strong> ${new Date(alert.sentAt).toLocaleString('fr-FR')}</p>
+                        <hr>
+                        <p><strong>Contenu de l'e-mail :</strong></p>
+                        <pre>${alert.body}</pre>
+                    `;
+                    document.getElementById('back-to-list-btn').addEventListener('click', showListView);
+                } catch (error) {
+                    alertDetailView.innerHTML = `<p class="text-danger">${error.message}</p>`;
+                }
+            }
+
+            // Écouteurs d'événements pour le panneau
+            viewAlertsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openPanel();
+            });
+
+            panelCloseBtn.addEventListener('click', closePanel);
+            panelOverlay.addEventListener('click', closePanel);
+
+            // Fermer avec la touche 'Echap'
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && alertsPanel.classList.contains('is-open')) {
+                    closePanel();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
